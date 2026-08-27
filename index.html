@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -13,9 +14,9 @@
 
         body {
             font-family: 'STKaiti', 'KaiTi', 'SimKai', serif;
-            background-color: #f9f6f0;
-            color: #5d4037;
-            line-height: 1.8;
+            background-color: #0f0f1a;
+            color: #ffffff;
+            line-height: 2;
             overflow-x: hidden;
             position: relative;
         }
@@ -26,11 +27,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -2;
             background-size: cover;
             background-position: center;
             transition: background-image 1.5s ease-in-out;
         }
+
+        
 
         .envelope-cover {
             position: fixed;
@@ -38,7 +41,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #e8d5b7;
+            background: #16213e;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -62,20 +65,21 @@
             color: white;
             font-size: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         .envelope-text {
             font-size: 24px;
-            color: #5d4037;
+            color: #ffffff;
             text-align: center;
             padding: 0 20px;
         }
 
         .letter-container {
-            max-width: 420px;
+            max-width: 640px;
             margin: 0 auto;
-            padding: 40px 20px 100px;
+            /* 页边距：左右各25px，上下40px/100px，保证文字不贴手机边缘 */
+            padding: 40px 25px 100px;
             min-height: 100vh;
             position: relative;
             z-index: 10;
@@ -85,29 +89,35 @@
             text-align: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #d7ccc8;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .letter-header h1 {
             font-size: 28px;
-            color: #8d6e63;
+            color: #ffffff;
             margin-bottom: 10px;
         }
 
         .letter-header .date {
             font-size: 14px;
-            color: #a1887f;
+            color: #cccccc;
         }
 
         .letter-content p {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             font-size: 18px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease-out;
+            color: #ffffff;
         }
 
-        .letter-content p.visible {
+        /* 逐行展现：每行初始隐藏，进入视口后依次淡入 */
+        .letter-content .line {
+            display: inline;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.6s ease-out;
+        }
+
+        .letter-content .line.visible {
             opacity: 1;
             transform: translateY(0);
         }
@@ -116,23 +126,25 @@
             text-align: right;
             margin-top: 40px;
             font-style: italic;
-            color: #8d6e63;
+            color: #ffffff;
         }
 
         .music-player {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
             padding: 10px 15px;
             border-radius: 30px;
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             z-index: 50;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .music-player:hover {
@@ -142,19 +154,19 @@
         .music-icon {
             width: 24px;
             height: 24px;
-            fill: #c44d34;
+            fill: #ffffff;
         }
 
         .music-text {
             font-size: 14px;
-            color: #5d4037;
+            color: #ffffff;
         }
 
         .bottom-hint {
             text-align: center;
             margin-top: 50px;
             padding: 20px;
-            color: #a1887f;
+            color: #aaaaaa;
             font-size: 14px;
             opacity: 0.7;
         }
@@ -180,7 +192,8 @@
 
         @media (max-width: 480px) {
             .letter-container {
-                padding: 30px 15px 80px;
+                /* 手机端页边距适当缩小但仍有留白 */
+                padding: 30px 18px 80px;
             }
             .letter-header h1 {
                 font-size: 24px;
@@ -193,6 +206,7 @@
 </head>
 <body>
     <div class="background-layer" id="bgLayer"></div>
+    
 
     <div class="envelope-cover" id="envelopeCover">
         <div class="seal">✉</div>
@@ -285,6 +299,88 @@
 
         setInterval(createPetal, 2000);
 
+        // ====== 核心功能：将每段文字拆分为逐行展现 ======
+        function splitParagraphsIntoLines() {
+            const paragraphs = document.querySelectorAll('.letter-content p');
+            
+            paragraphs.forEach(p => {
+                const text = p.textContent;
+                // 获取容器可用宽度（考虑padding）
+                const containerWidth = p.parentElement.clientWidth - 50;
+                
+                // 使用Canvas测量文字宽度，逐字符换行
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const fontSize = window.innerWidth <= 480 ? 16 : 18;
+                const fontFamily = "'STKaiti', 'KaiTi', 'SimKai', serif";
+                ctx.font = fontSize + 'px ' + fontFamily;
+                
+                const lines = [];
+                let currentLine = '';
+                
+                for (let i = 0; i < text.length; i++) {
+                    const testLine = currentLine + text[i];
+                    const metrics = ctx.measureText(testLine);
+                    
+                    if (metrics.width > containerWidth) {
+                        lines.push(currentLine);
+                        currentLine = text[i];
+                    } else {
+                        currentLine = testLine;
+                    }
+                }
+                if (currentLine) lines.push(currentLine);
+                
+                // 清空原段落，用span包裹每一行
+                p.innerHTML = '';
+                lines.forEach((line, idx) => {
+                    const span = document.createElement('span');
+                    span.className = 'line';
+                    span.textContent = line;
+                    p.appendChild(span);
+                });
+            });
+        }
+
+        // 使用IntersectionObserver实现逐行淡入动画
+        function animateLinesOnScroll() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const lines = entry.target.querySelectorAll('.line');
+                        lines.forEach((line, idx) => {
+                            setTimeout(() => {
+                                line.classList.add('visible');
+                            }, idx * 120); // 每行间隔120ms依次展现
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.05 });
+            
+            document.querySelectorAll('.letter-content p').forEach(p => {
+                observer.observe(p);
+            });
+        }
+
+        // 页面加载完成后执行拆分和观察
+        document.addEventListener('DOMContentLoaded', () => {
+            splitParagraphsIntoLines();
+            animateLinesOnScroll();
+        });
+
+        // 窗口大小改变时重新计算行拆分
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                // 移除所有visible类
+                document.querySelectorAll('.line').forEach(l => l.classList.remove('visible'));
+                splitParagraphsIntoLines();
+                animateLinesOnScroll();
+            }, 250);
+        });
+
         // 打开信封
         envelopeCover.addEventListener('click', () => {
             envelopeCover.classList.add('open');
@@ -328,25 +424,6 @@
                 bgLayer.style.backgroundImage = "url('" + images[currentImageIndex] + "')";
             }, 5000);
         }
-
-        // 文字渐显效果
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.letter-content p').forEach(p => {
-            observer.observe(p);
-        });
     </script>
 </body>
 </html>
