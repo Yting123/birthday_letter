@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>一想到要祝你生日快乐，我的心就扑通扑通</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'STKaiti', 'KaiTi', 'SimKai', serif;
+            background-color: #f9f6f0;
+            color: #5d4037;
+            line-height: 1.8;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 1.5s ease-in-out;
+        }
+
+        .envelope-cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #e8d5b7;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: transform 0.8s ease-in-out;
+        }
+
+        .envelope-cover.open {
+            transform: translateY(-100%);
+        }
+
+        .seal {
+            width: 80px;
+            height: 80px;
+            background: #c44d34;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .envelope-text {
+            font-size: 24px;
+            color: #5d4037;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .letter-container {
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 40px 20px 100px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        .letter-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #d7ccc8;
+        }
+
+        .letter-header h1 {
+            font-size: 28px;
+            color: #8d6e63;
+            margin-bottom: 10px;
+        }
+
+        .letter-header .date {
+            font-size: 14px;
+            color: #a1887f;
+        }
+
+        .letter-content p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+        }
+
+        .letter-content p.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 40px;
+            font-style: italic;
+            color: #8d6e63;
+        }
+
+        .music-player {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 50;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .music-player:hover {
+            transform: scale(1.05);
+        }
+
+        .music-icon {
+            width: 24px;
+            height: 24px;
+            fill: #c44d34;
+        }
+
+        .music-text {
+            font-size: 14px;
+            color: #5d4037;
+        }
+
+        .bottom-hint {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #a1887f;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .petal {
+            position: fixed;
+            top: -10%;
+            z-index: 5;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .letter-container {
+                padding: 30px 15px 80px;
+            }
+            .letter-header h1 {
+                font-size: 24px;
+            }
+            .letter-content p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-layer" id="bgLayer"></div>
+
+    <div class="envelope-cover" id="envelopeCover">
+        <div class="seal">✉</div>
+        <div class="envelope-text">点击开启<br>李伟嘉的生日信</div>
+    </div>
+
+    <div class="music-player" id="musicPlayer">
+        <svg class="music-icon" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+        </svg>
+        <span class="music-text">扑通扑通 - 周深</span>
+    </div>
+
+    <div class="letter-container">
+        <div class="letter-header">
+            <h1>一想到要祝你生日快乐，我的心就扑通扑通</h1>
+            <div class="date">20270828</div>
+        </div>
+        
+        <div class="letter-content">
+            <p>李伟嘉，展信佳~~</p>
+            <p>想来这是你的第24个生日，很幸运能够远程参与！希望你的身边正好有人能够为你插上蜡烛，如果还能有像上一次那样好吃的红丝绒蛋糕就更棒了。在送上更加正式的祝福之前，我想先跟你分享一下我的近况。</p>
+            <p>近期身边的朋友在准备秋招，我呢，也已经确定了自己的求职方向，每天3点一线，努力地找寻着考研期间的那种投入，虽然不及那时，但是就这样淡淡的，在心理上卸下了刻着"执念"的大石头，感觉过得也还行。另外，我还想跟你分享北京的天空，尤其是晚霞，记忆之中不常在新疆见到这种粉红色的云，也可能那时都匆匆忙忙，没怎么慢下来观察天空。</p>
+            <p>回到正题，如果每一年都祝你天天开心，未免过于普通。所以，今年，在这个第24个生日之际，我选择以另一种具体的方式祝你生日快乐！</p>
+            <p>1、祝你在港大遇到顶好的导师，他尊重你的想法，同时又在关键时刻给予支持；祝你遇到顶好的同门，你们可以抱怨听到的课程没有实际的用处，可以在赶完DDL之后一起出去吃顿海底捞，一起去当学术蝗虫，也能在周末约着一起去附近逛逛！</p>
+            <p>2、祝你在新的一年中遇到更多的晴天，这样，我们兴许有机会相约一起看云。</p>
+            <p>3、祝你遇到更好的自己，在每一次具体的选择和行动之中找到真正的期待，然后慢慢地坚持下去，这样真酷！</p>
+            <p>4、祝你按照自己的节奏继续走下去，去经历，去感受，然后，我们明年继续相遇/重逢……</p>
+        </div>
+        
+        <div class="signature">
+            李玉婷，于北京
+        </div>
+        
+        <div class="bottom-hint">
+            继续向下滚动，解锁更多美好...
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="扑通扑通.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <script>
+        const images = [
+            'https://img2.tofaka.com/autoupload/en/g6EjKOKaimDAc0YksUBcSUpdu1X4SLwWj9e2aVjjG3ayl5f0KlZfm6UsKj-HyTuv/20260827/6AQD/1080X1812/e720554fe72449e159cae355f0d93936.jpg',
+            'https://img2.tofaka.com/autoupload/en/g6EjKOKaimDAc0YksUBcSUpdu1X4SLwWj9e2aVjjG3ayl5f0KlZfm6UsKj-HyTuv/20260827/d9yF/1706X1279/1cda41eb848ecd24bb47e1bee0176e6b.jpg',
+            'https://img2.tofaka.com/autoupload/en/g6EjKOKaimDAc0YksUBcSUpdu1X4SLwWj9e2aVjjG3ayl5f0KlZfm6UsKj-HyTuv/20260827/Ro1g/1706X1279/ff9456c2063eab030dd19e340d32416a.jpg',
+            'https://img2.tofaka.com/autoupload/en/g6EjKOKaimDAc0YksUBcSUpdu1X4SLwWj9e2aVjjG3ayl5f0KlZfm6UsKj-HyTuv/20260827/R7ox/1279X1706/39ad00f500d0ed09681d410cf3a65614.jpg',
+            'https://img2.tofaka.com/autoupload/en/g6EjKOKaimDAc0YksUBcSUpdu1X4SLwWj9e2aVjjG3ayl5f0KlZfm6UsKj-HyTuv/20260827/tmLc/1279X1706/21dcbbe92e754c8472568b8eef4a387a.jpg',
+            'https://img2.tofaka.com/autoupload/en/g6EjKOKaimDAc0YksUBcSUpdu1X4SLwWj9e2aVjjG3ayl5f0KlZfm6UsKj-HyTuv/20260827/7j0d/1279X1706/af23784731ceb092037a7160805068c8.jpg',
+            'https://img2.tofaka.com/autoupload/en/g6EjKOKaimDAc0YksUBcSUpdu1X4SLwWj9e2aVjjG3ayl5f0KlZfm6UsKj-HyTuv/20260827/PSJ2/1706X1279/e2012d7cca80a147b1261ee0883cce8e.jpg',
+            'https://img2.tofaka.com/autoupload/en/g6EjKOKaimDAc0YksUBcSUpdu1X4SLwWj9e2aVjjG3ayl5f0KlZfm6UsKj-HyTuv/20260827/BSgo/1706X1279/da3df5b5f40cede98bef64720cdca12c.jpg',
+            'https://img2.tofaka.com/autoupload/en/g6EjKOKaimDAc0YksUBcSUpdu1X4SLwWj9e2aVjjG3ayl5f0KlZfm6UsKj-HyTuv/20260827/EMDX/810X1378/a23cc3d15ae4b29c4176ca2053bac8b2.jpg'
+        ];
+
+        let currentImageIndex = 0;
+        let isMusicPlaying = false;
+        let hasReachedBottom = false;
+        let slideshowInterval = null;
+
+        const bgLayer = document.getElementById('bgLayer');
+        const envelopeCover = document.getElementById('envelopeCover');
+        const musicPlayer = document.getElementById('musicPlayer');
+        const bgMusic = document.getElementById('bgMusic');
+
+        // 预加载所有图片
+        images.forEach(url => {
+            const img = new Image();
+            img.src = url;
+        });
+
+        // 初始化背景为第一张图
+        bgLayer.style.backgroundImage = "url('" + images[0] + "')";
+
+        // 创建花瓣飘落效果
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.innerHTML = '🌸';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            petal.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            petal.style.opacity = Math.random() * 0.5 + 0.3;
+            document.body.appendChild(petal);
+            setTimeout(() => { petal.remove(); }, 10000);
+        }
+
+        setInterval(createPetal, 2000);
+
+        // 打开信封
+        envelopeCover.addEventListener('click', () => {
+            envelopeCover.classList.add('open');
+            bgMusic.play().catch(e => console.log("自动播放被阻止，需手动点击播放器"));
+        });
+
+        // 音乐播放控制
+        musicPlayer.addEventListener('click', () => {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                musicPlayer.querySelector('.music-text').textContent = '扑通扑通 - 周深';
+            } else {
+                bgMusic.play();
+                musicPlayer.querySelector('.music-text').textContent = '正在播放...';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        });
+
+        // 滚动监听：到达底部触发第二阶段
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+
+            if (scrollTop + windowHeight >= documentHeight - 100 && !hasReachedBottom) {
+                hasReachedBottom = true;
+                startSlideshow();
+                if (!isMusicPlaying) {
+                    bgMusic.play();
+                    isMusicPlaying = true;
+                    musicPlayer.querySelector('.music-text').textContent = '正在播放...';
+                }
+            }
+        });
+
+        // 开始轮播图片
+        function startSlideshow() {
+            currentImageIndex = 1;
+            slideshowInterval = setInterval(() => {
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                bgLayer.style.backgroundImage = "url('" + images[currentImageIndex] + "')";
+            }, 5000);
+        }
+
+        // 文字渐显效果
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.letter-content p').forEach(p => {
+            observer.observe(p);
+        });
+    </script>
+</body>
+</html>
